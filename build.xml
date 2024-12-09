@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="my-ant-project" default="test" basedir=".">
+
+    <!-- Define directory paths -->
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="test.classes.dir" value="${build.dir}/test-classes"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="test.report.dir" value="${build.dir}/test-reports"/>
+
+    <!-- Compile the source code -->
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="src" destdir="${classes.dir}" includeantruntime="false">
+            <!-- Include additional classpath elements if necessary -->
+            <classpath>
+                <pathelement location="${lib.dir}/junit-4.13.1.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Run the tests (without running Main) -->
+    <target name="test" depends="compile">
+        <mkdir dir="${test.report.dir}"/>
+        <mkdir dir="${test.classes.dir}"/>
+
+        <!-- Compile and run JUnit tests -->
+        <javac srcdir="src/test" destdir="${test.classes.dir}">
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <pathelement location="${lib.dir}/junit-4.13.1.jar"/>
+            </classpath>
+        </javac>
+
+        <junit>
+            <classpath>
+                <pathelement location="${build.dir}/classes"/>
+        <pathelement location="${build.dir}/test-classes"/>
+                <pathelement location="${lib.dir}/junit-4.13.1.jar"/>
+            </classpath>
+            <batchtest fork="true">
+                <fileset dir="${test.classes.dir}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+        </junit>
+
+        <!-- Generate test report -->
+        <junitreport todir="${test.report.dir}">
+            <fileset dir="${test.report.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+        </junitreport>
+    </target>
+
+</project>
+
