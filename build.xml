@@ -12,19 +12,17 @@
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
         <javac srcdir="src" destdir="${classes.dir}" includeantruntime="false">
-            <!-- Include additional classpath elements if necessary -->
             <classpath>
                 <pathelement location="${lib.dir}/junit-4.13.1.jar"/>
             </classpath>
         </javac>
     </target>
 
-    <!-- Run the tests (without running Main) -->
+    <!-- Run the tests -->
     <target name="test" depends="compile">
         <mkdir dir="${test.report.dir}"/>
         <mkdir dir="${test.classes.dir}"/>
 
-        <!-- Compile and run JUnit tests -->
         <javac srcdir="src/test" destdir="${test.classes.dir}">
             <classpath>
                 <pathelement location="${classes.dir}"/>
@@ -34,8 +32,8 @@
 
         <junit>
             <classpath>
-                <pathelement location="${build.dir}/classes"/>
-        <pathelement location="${build.dir}/test-classes"/>
+                <pathelement location="${classes.dir}"/>
+                <pathelement location="${test.classes.dir}"/>
                 <pathelement location="${lib.dir}/junit-4.13.1.jar"/>
             </classpath>
             <batchtest fork="true">
@@ -46,13 +44,7 @@
             <formatter type="plain"/>
             <formatter type="xml"/>
         </junit>
-
-        <!-- Generate test report -->
-        <junitreport todir="${test.report.dir}">
-            <fileset dir="${test.report.dir}">
-                <include name="TEST-*.xml"/>
-            </fileset>
-        </junitreport>
     </target>
 
 </project>
+
